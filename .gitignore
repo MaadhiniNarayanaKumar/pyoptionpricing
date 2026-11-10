@@ -1,0 +1,11 @@
+todo.txt
+
+.venv
+.pytest_cache
+.coverage
+.coverage.*
+.coverage.xml
+.coverage.xml.*
+.coverage.xml.*.*
+.coverage.xml.*.*.*
+.coverage.xml.*.*.*.*

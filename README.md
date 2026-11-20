@@ -10,7 +10,7 @@ An object-oriented Python library and web platform for interactive option valuat
 
 ## Overview
 
-**Live demo:** https://pyoptionpricingui.vercel.app · **API docs:** https://pyoptionpricing.vercel.app/docs
+**Live demo:** https://pyoptionspricing.maadhini.com · **API docs:** https://pyoptionpricing.vercel.app/docs
 
 `pyoptionpricing` is a modular Python library that prices vanilla and path-dependent options through a single, model-independent interface. Client code can price any option with `price()` and `greeks()` without knowing whether the underlying method is Black-Scholes, a Binomial Tree or Monte Carlo.
 
@@ -254,7 +254,7 @@ Create a second project with **Root Directory** set to `frontend`, and set `NEXT
 ### Links
 
 - **Backend:** https://pyoptionpricing.vercel.app (Swagger docs at https://pyoptionpricing.vercel.app/docs)
-- **Frontend / demo:** https://pyoptionpricingui.vercel.app
+- **Frontend / demo:** https://pyoptionspricing.maadhini.com (also at https://pyoptionpricingui.vercel.app)
 
 ## Deliverables
 

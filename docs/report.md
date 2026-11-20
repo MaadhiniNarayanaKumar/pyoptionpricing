@@ -8,7 +8,7 @@
 
 `pyoptionpricing` is an object-oriented Python library that prices European, American and path-dependent options through one interface: every option has `price()` and `greeks()`. Three pricing methods sit behind that interface: the Black-Scholes formula, a Cox-Ross-Rubinstein binomial tree, and Monte Carlo simulation. Arithmetic Asian and single-barrier options are built on a shared path simulator. Implied volatility is found with Brent's method and works with any model.
 
-The library is served by a FastAPI backend with eight endpoints and used through a Next.js dashboard. Both are deployed on Vercel: the dashboard at https://pyoptionpricingui.vercel.app and the API (with Swagger docs) at https://pyoptionpricing.vercel.app/docs. The dashboard shows prices and Greeks, a model comparison, and charts of payoff, convergence, simulated paths and the volatility smile.
+The library is served by a FastAPI backend with eight endpoints and used through a Next.js dashboard. Both are deployed on Vercel: the dashboard at https://pyoptionspricing.maadhini.com and the API (with Swagger docs) at https://pyoptionpricing.vercel.app/docs. The dashboard shows prices and Greeks, a model comparison, and charts of payoff, convergence, simulated paths and the volatility smile.
 
 ## 2. Mapping OOP principles to the code
 

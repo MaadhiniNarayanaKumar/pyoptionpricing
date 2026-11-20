@@ -18,7 +18,7 @@ const description =
 
 export const metadata: Metadata = {
   // Absolute base for the share image. Change this to the custom domain once it is final.
-  metadataBase: new URL("https://pyoptionpricingui.vercel.app"),
+  metadataBase: new URL("https://pyoptionspricing.maadhini.com"),
   title,
   description,
   openGraph: { title, description, type: "website", siteName: "pyoptionpricing" },

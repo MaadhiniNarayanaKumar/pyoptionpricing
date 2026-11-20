@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyoptionpricing"
-version = "0.1.0"
+version = "0.1.1"
 description = "Object-oriented option pricing: Black-Scholes, binomial tree and Monte Carlo behind one interface, with Asian and barrier options and implied volatility."
 readme = "README.md"
 license = "MIT"
@@ -32,7 +32,7 @@ dependencies = ["numpy>=1.24", "scipy>=1.10"]
 
 [project.urls]
 Homepage = "https://github.com/MaadhiniNarayanaKumar/pyoptionpricing"
-Demo = "https://pyoptionpricingui.vercel.app"
+Demo = "https://pyoptionspricing.maadhini.com"
 "API docs" = "https://pyoptionpricing.vercel.app/docs"
 
 [project.optional-dependencies]

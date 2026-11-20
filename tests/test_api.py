@@ -170,6 +170,24 @@ class TestMeta:
         )
         assert r.headers["access-control-allow-origin"] == "http://localhost:3000"
 
+    def test_cors_origin_setting_ignores_trailing_slash(self, monkeypatch):
+        import importlib
+
+        import backend.main as main_module
+
+        monkeypatch.setenv("FRONTEND_ORIGINS", "https://pyoptionpricingui.vercel.app/")
+        try:
+            regex_client = TestClient(importlib.reload(main_module).app)
+            r = regex_client.options(
+                "/price",
+                headers={"Origin": "https://pyoptionpricingui.vercel.app",
+                         "Access-Control-Request-Method": "POST"},
+            )
+            assert r.headers["access-control-allow-origin"] == "https://pyoptionpricingui.vercel.app"
+        finally:
+            monkeypatch.delenv("FRONTEND_ORIGINS")
+            importlib.reload(main_module)
+
     def test_cors_origin_regex_allows_matching_deployments_only(self, monkeypatch):
         import importlib
 

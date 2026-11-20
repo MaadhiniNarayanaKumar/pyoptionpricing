@@ -40,7 +40,8 @@ _origins = os.environ.get(
 _origin_regex = os.environ.get("FRONTEND_ORIGIN_REGEX") or None
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[origin.strip() for origin in _origins.split(",") if origin.strip()],
+    # Browsers send origins without a trailing slash, so ignore one in the setting.
+    allow_origins=[o.strip().rstrip("/") for o in _origins.split(",") if o.strip()],
     allow_origin_regex=_origin_regex,
     allow_methods=["*"],
     allow_headers=["*"],

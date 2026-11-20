@@ -12,9 +12,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const title = "pyoptionpricing | Option pricing and Greeks calculator";
+const description =
+  "Price European, American, Asian and barrier options with Black-Scholes, a binomial tree and Monte Carlo. Compare models, see Greeks, payoffs, convergence and the implied volatility smile.";
+
 export const metadata: Metadata = {
-  title: "pyoptionpricing",
-  description: "Option pricing, Greeks, model comparison and implied volatility",
+  // Absolute base for the share image. Change this to the custom domain once it is final.
+  metadataBase: new URL("https://pyoptionpricingui.vercel.app"),
+  title,
+  description,
+  openGraph: { title, description, type: "website", siteName: "pyoptionpricing" },
+  twitter: { card: "summary_large_image", title, description },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { getGreeks, getPrice, type OptionRequest } from "@/lib/api";
 import { useRequest } from "@/lib/useRequest";
@@ -46,11 +47,14 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">pyoptionpricing</h1>
-        <p className="text-sm text-slate-600">
-          Price European, American and path-dependent options with Black-Scholes, a binomial tree and Monte Carlo.
-        </p>
+      <header className="mb-6 flex items-center gap-3">
+        <Image src="/logo.png" alt="pyoptionpricing logo" width={44} height={44} priority className="h-11 w-11" />
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">pyoptionpricing</h1>
+          <p className="text-sm text-slate-600">
+            Price European, American and path-dependent options with Black-Scholes, a binomial tree and Monte Carlo.
+          </p>
+        </div>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">

@@ -13,19 +13,12 @@ The library is served by a FastAPI backend with eight endpoints and used through
 ## 2. Mapping OOP principles to the code
 
 | Principle | Where | How |
-
 | --- | --- | --- |
-
 | **Abstraction** | `pyoptionpricing/base.py` (`Option`) | `Option` is an `ABC` with `price()` and `greeks()` declared as `@abstractmethod`. Callers depend on this contract, not on any pricing method. `EuropeanOption`, `AmericanOption` and `PathDependentOption` (`european.py`, `american.py`, `path_dependent.py`) are also abstract, so none of the four can be instantiated (tested in `tests/test_base.py`). |
-
 | **Inheritance** | `black_scholes.py`, `binomial.py`, `monte_carlo.py`, `path_dependent.py`, `asian.py`, `barrier.py` | Every concrete class inherits validation and read-only properties from `Option`. `BinomialEuropeanOption` and `BinomialAmericanOption` share all tree code through the `_BinomialOption` base and differ only in the class attribute `_american`. `AsianOption` and `BarrierOption` inherit path simulation, pricing, standard error and Greeks from `_PathMonteCarlo`. |
-
 | **Polymorphism** | `engine.py` (`PricingEngine`), `implied_vol.py`, `backend/main.py` | `PricingEngine` accepts any `Option` and calls `price()` and `greeks()` without knowing the concrete class. `implied_volatility` calls the option's own `price()` inside the root finder, so one solver works for Black-Scholes, binomial and Monte Carlo. The `/compare` endpoint loops over six different classes with identical code. |
-
 | **Encapsulation** | `base.py`, `binomial.py`, `monte_carlo.py`, `path_dependent.py`, `barrier.py` | Inputs are stored in underscore attributes and exposed through getter-only properties, so `option.spot = 200` raises `AttributeError`. The constructor rejects invalid inputs, so an option object is always valid. Internal details are private: the tree (`_crr_tree`, `_tree`), the stored random normals (`_z`), `_d1`/`_d2`, and the barrier-hit mask (`_hit`). |
-
 | **Factory pattern** | `factory.py` (`OptionFactory`) | `OptionFactory.create(model, style, ...)` maps a `(model, style)` pair to a class through a registry dictionary, accepts aliases (`"bs"`, `"crr"`, `"mc"`), and passes model-specific arguments such as `steps` and `barrier` through. The API and the implied-vol solver build every option through it. Adding a model takes one registry entry. |
-
 | **Template method** | `path_dependent.py` (`_PathMonteCarlo`) | The base class fixes the algorithm (simulate paths, then discount payoffs, then average, plus standard error and bump-and-reprice Greeks). Subclasses override only `_discounted_payoffs`. |
 
 The class diagram is in [`uml.md`](uml.md). The three-layer architecture and request flow are in [`architecture.md`](architecture.md).
@@ -44,16 +37,12 @@ The class diagram is in [`uml.md`](uml.md). The three-layer architecture and req
 
 ## 4. Results
 
-Inputs: \(S = K = 100\), \(T = 1\), \(r = 5\\%\), \(\sigma = 20\\%\).
+Inputs: \(S = K = 100\), \(T = 1\), \(r = 5\%\), \(\sigma = 20\%\).
 
 | Contract | Black-Scholes | Binomial (500 steps) | Monte Carlo (100k paths) |
-
 | --- | --- | --- | --- |
-
 | European call | 10.4506 | 10.4466 | 10.4205 (s.e. 0.0468) |
-
 | European put | 5.5735 | 5.5695 | 5.6122 (s.e. 0.0275) |
-
 | American put | n/a | 6.0888 | n/a |
 
 - Put-call parity holds to \(10^{-8}\) for both Black-Scholes and the tree.
@@ -165,21 +154,13 @@ pytest --cov=pyoptionpricing --cov=backend --cov-report=term-missing
 Coverage is about 99% (target: 80%). The required correctness checks are all present:
 
 | Check | Test |
-
 | --- | --- |
-
 | Put-call parity | `test_black_scholes.py::TestParity`, `test_binomial.py::test_european_put_call_parity` |
-
 | Binomial convergence | `test_binomial.py::test_converges_within_tolerance`, `test_analysis.py::test_binomial_error_shrinks` |
-
 | Greeks vs finite differences | `test_black_scholes.py::TestFiniteDifference` (all five Greeks, calls and puts) |
-
 | Monte Carlo within standard error | `test_monte_carlo.py::test_within_three_standard_errors_of_black_scholes` |
-
 | American ≥ European | `test_binomial.py::test_american_put_is_at_least_european_put` |
-
 | Barrier in + out = vanilla | `test_barrier.py::test_knock_in_plus_knock_out_equals_vanilla` |
-
 | Invalid inputs | `test_base.py::TestValidation`, plus validation tests in each module and `test_api.py::TestErrors` |
 
 ## 6. Challenges
@@ -229,17 +210,11 @@ I used AI tools while building this project. This section states how, so the wor
 ### Timeline
 
 | Date | Work |
-
 | --- | --- |
-
 | Oct 4 – Nov 10 | Research and planning|
-
 | Nov 10 | Project setup. A first version generated with Cursor (option hierarchy, validation, Black-Scholes) was reverted, and I restarted from a smaller base. |
-
 | Nov 11 | Binomial European and American options, with Copilot assistance. |
-
 | Nov 13 | Monte Carlo pricing, factory and engine, with tests. |
-
 | Nov 19 | Asian and barrier options, implied volatility, analysis helpers, FastAPI backend, Next.js frontend, documentation. |
 
 ### AI Assistance and Individual Contributions
@@ -289,43 +264,26 @@ The overall design, development, integration, testing, and verification of the p
 ### Programs in this submission
 
 | Part | Files | Purpose |
-
 | --- | --- | --- |
-
 | Core library | `pyoptionpricing/` (`base.py`, `european.py`, `american.py`, `path_dependent.py`, `black_scholes.py`, `binomial.py`, `monte_carlo.py`, `asian.py`, `barrier.py`, `paths.py`, `factory.py`, `engine.py`, `implied_vol.py`, `analysis.py`) | Option classes, pricing models, factory, engine, implied volatility, chart data |
-
 | Backend | `backend/main.py`, `backend/schemas.py` | FastAPI app and request schemas |
-
 | Frontend | `frontend/src/` (components, `lib/`, app pages) | Next.js dashboard |
-
 | Tests | `tests/` (11 files) | pytest suite |
-
 | Demo and examples | `demo.py`, `examples/` | Sample output and example API requests |
-
 | Documentation | `README.md`, `docs/` | Setup, report, UML, architecture |
 
 ### Code and ideas not written by me
 
 | Source | Used for |
-
 | --- | --- |
-
 | NumPy | Arrays, random numbers, vectorised math |
-
 | SciPy | `scipy.stats.norm` (normal CDF and PDF), `scipy.optimize.brentq` (root finding) |
-
 | FastAPI, Pydantic, Uvicorn | Backend API, validation, server |
-
 | pytest, pytest-cov, httpx | Testing and coverage |
-
 | Next.js, React, TypeScript, Recharts, Tailwind CSS, ESLint | Frontend framework, charts, styling, linting |
-
 | Geist and Geist Mono fonts (Google Fonts, loaded through `next/font`) | Frontend typography |
-
 | Next.js starter template (`create-next-app`) | Initial frontend scaffolding. Unused starter files (default images, template README) were removed. |
-
 | Black-Scholes (1973), Cox-Ross-Rubinstein (1979), Brent's method | Published algorithms, implemented in this project |
-
 | AI tools (Cursor, GitHub Copilot, Claude) | See section 8 for exactly where they were used |
 
 All code in this repository other than the sources listed above was written or edited by me, with the AI assistance described in section 8.

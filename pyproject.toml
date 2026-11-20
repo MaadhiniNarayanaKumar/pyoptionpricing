@@ -1,18 +1,55 @@
 [build-system]
-requires = ["setuptools>=64"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyoptionpricing"
 version = "0.1.0"
+description = "Object-oriented option pricing: Black-Scholes, binomial tree and Monte Carlo behind one interface, with Asian and barrier options and implied volatility."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.9"
-# Runtime dependencies for the library and the FastAPI backend. Vercel installs
-# from this list (it prefers pyproject.toml over requirements.txt), so every
-# package the deployed API imports must be here.
-dependencies = ["numpy", "scipy", "fastapi", "pydantic"]
+authors = [{ name = "Maadhini Narayanakumar" }]
+keywords = [
+    "options", "derivatives", "black-scholes", "binomial-tree",
+    "monte-carlo", "implied-volatility", "quantitative-finance",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Education",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+# The library itself needs only NumPy and SciPy.
+dependencies = ["numpy>=1.24", "scipy>=1.10"]
+
+[project.urls]
+Homepage = "https://github.com/MaadhiniNarayanaKumar/pyoptionpricing"
+Demo = "https://pyoptionpricingui.vercel.app"
+"API docs" = "https://pyoptionpricing.vercel.app/docs"
 
 [project.optional-dependencies]
-dev = ["uvicorn", "httpx", "pytest", "pytest-cov"]
+# pip install "pyoptionpricing[api]"  runs the FastAPI backend
+api = ["fastapi", "pydantic", "uvicorn"]
+# pip install -e ".[dev]"  backend plus the test tools
+dev = ["fastapi", "pydantic", "uvicorn", "httpx", "pytest", "pytest-cov"]
+
+# Vercel installs with `uv sync --no-dev`, which skips the extras above but does
+# install default dependency groups. Keep this group in step with the `api`
+# extra so the deployed backend gets its web framework without making it a
+# dependency of the library.
+[dependency-groups]
+api = ["fastapi", "pydantic"]
+
+[tool.uv]
+default-groups = ["api"]
 
 [tool.setuptools]
 packages = ["pyoptionpricing"]

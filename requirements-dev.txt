@@ -1,0 +1,5 @@
+# Runtime packages plus the tools needed to run the test suite.
+-r requirements.txt
+httpx
+pytest
+pytest-cov

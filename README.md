@@ -99,8 +99,10 @@ cd <your-repo>
 ```bash
 python -m venv .venv
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
-pip install -e ".[dev]"        # or: pip install -r requirements.txt
+pip install -e ".[dev]"        # or: pip install -r requirements-dev.txt
 ```
+
+The library itself depends only on NumPy and SciPy, so `pip install .` is enough to use it from Python. The `api` extra (`pip install ".[api]"`) adds FastAPI, Pydantic and Uvicorn for the backend, and `dev` adds the test tools.
 
 ### 3. Run the backend
 
@@ -203,7 +205,7 @@ Both parts run on Vercel as two separate projects from this one repository.
 
 Create a Vercel project from the repository with **Root Directory** left at the repository root and **Framework Preset** set to FastAPI (or Other). No build command is needed.
 
-- `pyproject.toml` lists the runtime dependencies and sets `[tool.vercel] entrypoint = "backend.main:app"`.
+- `pyproject.toml` sets `[tool.vercel] entrypoint = "backend.main:app"`. Vercel installs from `pyproject.toml` and ignores `requirements.txt` when both exist, and its `uv sync --no-dev` skips optional extras. So the API packages are also listed in the `api` dependency group, which `[tool.uv] default-groups` installs. Keep that group in step with the `api` extra.
 - `vercel.json` sets the function timeout and leaves the frontend, tests and docs out of the bundle.
 - Set the environment variable `FRONTEND_ORIGINS` to the frontend's URL (comma-separated for more than one), for example `https://your-frontend.vercel.app`. Redeploy after changing it.
 - Vercel gives each deployment its own URL, so you can also set `FRONTEND_ORIGIN_REGEX` to a pattern that matches all of them, for example `https://pyoptionpricing-.*-maadhinis-projects\.vercel\.app`.
@@ -246,4 +248,4 @@ Create a second project with **Root Directory** set to `frontend`, and set `NEXT
 
 ## License
 
-Developed for academic purposes as part of coursework at Rutgers University.
+Released under the MIT License. See [LICENSE](LICENSE). Developed as coursework at Rutgers University.

@@ -6,6 +6,8 @@ from pyoptionpricing import (
     BinomialEuropeanOption,
     BinomialAmericanOption,
     MonteCarloEuropeanOption,
+    AsianOption,
+    BarrierOption,
 )
 
 PARAMS = dict(spot=100, strike=100, maturity=1.0, rate=0.05,
@@ -18,6 +20,7 @@ class TestDispatch:
         ("binomial", "european", BinomialEuropeanOption),
         ("binomial", "american", BinomialAmericanOption),
         ("monte_carlo", "european", MonteCarloEuropeanOption),
+        ("asian", "european", AsianOption),
     ])
     def test_returns_correct_class(self, model, style, expected):
         option = OptionFactory.create(model, style, **PARAMS)
@@ -49,6 +52,22 @@ class TestPassThrough:
     def test_monte_carlo_kwargs_forwarded(self):
         option = OptionFactory.create("mc", "european", n_paths=500, seed=3, **PARAMS)
         assert (option.n_paths, option.seed) == (500, 3)
+
+    def test_asian_kwargs_forwarded(self):
+        option = OptionFactory.create(
+            "asian", "european", n_paths=800, n_steps=12, seed=4, **PARAMS
+        )
+        assert type(option) is AsianOption
+        assert (option.n_paths, option.n_steps, option.seed) == (800, 12, 4)
+
+    def test_barrier_kwargs_forwarded(self):
+        option = OptionFactory.create(
+            "barrier", "european", barrier=130, barrier_type="down-and-in",
+            n_paths=900, n_steps=15, seed=5, **PARAMS
+        )
+        assert option.barrier == 130
+        assert option.barrier_type == "down-and-in"
+        assert (option.n_paths, option.n_steps, option.seed) == (900, 15, 5)
 
     def test_price_matches_direct_construction(self):
         via_factory = OptionFactory.create("black_scholes", "european", **PARAMS).price()

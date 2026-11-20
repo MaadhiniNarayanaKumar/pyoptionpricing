@@ -5,11 +5,12 @@ from .american import AmericanOption
 
 
 def _crr_tree(spot, strike, maturity, rate, vol, option_type, steps, american):
-    dt = maturity / steps
-    u = math.exp(vol * math.sqrt(dt))
-    d = 1 / u
-    p = (math.exp(rate * dt) - d) / (u - d)
-    disc = math.exp(-rate * dt)
+    
+    dt = maturity/steps
+    u = math.exp(vol*math.sqrt(dt))
+    d = 1/u
+    p = (math.exp(rate * dt)- d) / (u -d)
+    disc = math.exp(-rate *dt)
 
     j = np.arange(steps + 1)
     terminal_spot = spot * u**j * d**(steps - j)

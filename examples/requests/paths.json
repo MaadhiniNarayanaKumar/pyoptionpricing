@@ -1,0 +1,15 @@
+{
+  "spot": 100,
+  "strike": 100,
+  "maturity": 1,
+  "rate": 0.05,
+  "volatility": 0.2,
+  "option_type": "call",
+  "model": "barrier",
+  "style": "european",
+  "barrier": 120,
+  "barrier_type": "up-and-out",
+  "n_steps": 30,
+  "n_display": 5,
+  "seed": 7
+}

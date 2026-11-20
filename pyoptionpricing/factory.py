@@ -1,6 +1,8 @@
 from .black_scholes import BlackScholesOption
 from .binomial import BinomialEuropeanOption, BinomialAmericanOption
 from .monte_carlo import MonteCarloEuropeanOption
+from .asian import AsianOption
+from .barrier import BarrierOption
 
 
 class OptionFactory:
@@ -15,6 +17,8 @@ class OptionFactory:
         "monte_carlo": "monte_carlo",
         "monte-carlo": "monte_carlo",
         "mc": "monte_carlo",
+        "asian": "asian",
+        "barrier": "barrier",
     }
 
     _REGISTRY = {
@@ -22,11 +26,13 @@ class OptionFactory:
         ("binomial", "european"): BinomialEuropeanOption,
         ("binomial", "american"): BinomialAmericanOption,
         ("monte_carlo", "european"): MonteCarloEuropeanOption,
+        ("asian", "european"): AsianOption,
+        ("barrier", "european"): BarrierOption,
     }
 
     @classmethod
-    def create(cls, model, style, spot, strike, maturity, rate,
-               volatility, option_type, **kwargs):
+    def option_class(cls, model, style):
+        """The Option subclass registered for (model, style)."""
         model_key = cls._MODEL_ALIASES.get(model.lower())
         if model_key is None:
             raise ValueError(f"Unknown model '{model}'.")
@@ -39,7 +45,12 @@ class OptionFactory:
                 f"Model '{model}' does not support style '{style}'. "
                 f"Supported styles: {supported}."
             )
+        return option_cls
 
+    @classmethod
+    def create(cls, model, style, spot, strike, maturity, rate,
+               volatility, option_type, **kwargs):
+        option_cls = cls.option_class(model, style)
         return option_cls(
             spot, strike, maturity, rate, volatility, option_type, **kwargs
         )

@@ -8,6 +8,10 @@ version = "0.1.0"
 requires-python = ">=3.9"
 dependencies = ["numpy", "scipy"]
 
+[project.optional-dependencies]
+api = ["fastapi", "uvicorn", "pydantic"]
+dev = ["fastapi", "uvicorn", "pydantic", "httpx", "pytest", "pytest-cov"]
+
 [tool.setuptools]
 packages = ["pyoptionpricing"]
 

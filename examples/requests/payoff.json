@@ -1,0 +1,13 @@
+{
+  "spot": 100,
+  "strike": 100,
+  "maturity": 1,
+  "rate": 0.05,
+  "volatility": 0.2,
+  "option_type": "call",
+  "model": "black_scholes",
+  "style": "european",
+  "spot_min": 50,
+  "spot_max": 150,
+  "n_points": 11
+}

@@ -12,9 +12,17 @@ PARAMS = dict(spot=100, strike=100, maturity=1.0, rate=0.05,
               volatility=0.2, option_type="put")
 
 
+_SIM = {"n_paths": 2_000, "n_steps": 10}
+
+_EXTRA = {
+    ("asian", "european"): _SIM,
+    ("barrier", "european"): {**_SIM, "barrier": 120, "barrier_type": "up-and-out"},
+}
+
+
 @pytest.mark.parametrize("model,style", OptionFactory.available())
 def test_engine_works_with_every_model(model, style):
-    option = OptionFactory.create(model, style, **PARAMS)
+    option = OptionFactory.create(model, style, **PARAMS, **_EXTRA.get((model, style), {}))
     engine = PricingEngine(option)
     assert engine.price() == pytest.approx(option.price())
     assert engine.greeks() == pytest.approx(option.greeks())

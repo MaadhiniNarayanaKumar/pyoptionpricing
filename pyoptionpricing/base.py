@@ -14,7 +14,7 @@ class Option(ABC):
         if maturity <= 0:
             raise ValueError("Maturity must be positive.")
         if volatility <= 0:
-            raise ValueError("Volatility must be non-negative.")
+            raise ValueError("Volatility must be positive.")
         if option_type.lower() not in ['call', 'put']:
             raise ValueError("option_type must be either 'call' or 'put'.")
 

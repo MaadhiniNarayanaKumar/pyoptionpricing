@@ -1,0 +1,11 @@
+{
+  "spot": 100,
+  "rate": 0.05,
+  "option_type": "call",
+  "model": "black_scholes",
+  "style": "european",
+  "strikes": [80, 90, 100, 110, 120],
+  "maturities": [0.25, 1],
+  "atm_vol": 0.2,
+  "skew": -0.15
+}

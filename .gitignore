@@ -1,11 +1,38 @@
-todo.txt
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
 
-.venv
-.pytest_cache
+# Testing / coverage
+.pytest_cache/
 .coverage
 .coverage.*
-.coverage.xml
-.coverage.xml.*
-.coverage.xml.*.*
-.coverage.xml.*.*.*
-.coverage.xml.*.*.*.*
+htmlcov/
+coverage.xml
+
+# Secrets / env files
+.env
+.env.*
+!.env.example
+
+# Next.js / Node (frontend)
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Deployment
+.vercel/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Personal notes
+todo.txt

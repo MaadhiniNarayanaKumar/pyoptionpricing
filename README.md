@@ -81,7 +81,7 @@ Option (abstract)
 
 ### Prerequisites
 
-- Python 3.10+
+- Python 3.9+
 - Node.js 18+
 - Git
 
@@ -97,7 +97,7 @@ cd <your-repo>
 ```bash
 python -m venv .venv
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
-pip install -e ".[dev]"
+pip install -e ".[dev]"        # or: pip install -r requirements.txt
 ```
 
 ### 3. Run the backend
@@ -132,33 +132,48 @@ option = OptionFactory.create(
     spot=100, strike=100, maturity=1.0, rate=0.05, volatility=0.20,
 )
 
-engine = PricingEngine()
-print(engine.price(option))     # ~10.4506
-print(engine.greeks(option))    # delta, gamma, theta, vega, rho
+engine = PricingEngine(option)
+print(engine.price())     # ~10.4506
+print(engine.greeks())    # delta, gamma, theta, vega, rho
+print(engine.run())       # model name, price, Greeks (+ standard error for Monte Carlo)
 ```
 
 Swapping `model="binomial"` or `model="monte_carlo"` requires no other change to the client code.
+
+### Demo script
+
+```bash
+python demo.py
+```
+
+This walks through one example per feature: Black-Scholes and parity, validation, every model through the factory and engine, binomial convergence, American vs European, Monte Carlo error, Asian and Barrier, implied volatility, and the smile.
 
 ## API Endpoints
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| POST | `/price` | Price an option with the chosen model |
+| POST | `/price` | Price an option with the chosen model (plus standard error for simulations) |
 | POST | `/greeks` | Compute Greeks |
-| POST | `/compare` | Compare models side by side |
-| POST | `/convergence` | Binomial vs Black-Scholes by tree depth |
-| POST | `/payoff` | Payoff at maturity |
-| POST | `/paths` | Simulated price paths for path-dependent options |
-| POST | `/implied-vol` | Implied volatility from a market price |
-| POST | `/vol-surface` | Implied volatility across strikes |
+| POST | `/compare` | Price the same contract with every model side by side |
+| POST | `/convergence` | Binomial price by tree depth and Monte Carlo price by path count, against Black-Scholes |
+| POST | `/payoff` | Payoff and profit at maturity across terminal spot prices |
+| POST | `/paths` | Sample simulated GBM price paths |
+| POST | `/implied-vol` | Implied volatility from a market price, with any model |
+| POST | `/vol-surface` | Implied volatility across strikes and maturities from synthetic skewed prices |
+| GET | `/models` | Supported (model, style) pairs and the extra inputs each needs |
+| GET | `/health` | Health check |
 
-Full request and response schemas are available in Swagger at `/docs`.
+Every request takes `spot`, `strike`, `maturity`, `rate`, `volatility`, `option_type`, `model` and `style`. Model-specific inputs are optional (`steps`; `n_paths`, `n_steps`, `seed`; `barrier`, `barrier_type`) and are ignored by models that do not use them. Invalid inputs return HTTP 422 with a readable message.
+
+Full request and response schemas are available in Swagger at `/docs`. Allowed frontend origins can be set with `FRONTEND_ORIGINS` (comma-separated, default `http://localhost:3000`).
 
 ## Testing
 
 ```bash
-pytest --cov=pyoptionpricing --cov-report=term-missing
+pytest --cov=pyoptionpricing --cov=backend --cov-report=term-missing
 ```
+
+The suite covers the library and every API endpoint. Current coverage is about 99%.
 
 Correctness checks include:
 
@@ -171,6 +186,12 @@ Correctness checks include:
 - Asian call price at most the European call price
 
 Target coverage: 80%+
+
+## Documentation
+
+- [UML class diagram](docs/uml.md)
+- [Architecture and request flow](docs/architecture.md)
+- [Final report](docs/report.md): OOP principles mapped to classes and files, results, challenges
 
 ## Deployment
 

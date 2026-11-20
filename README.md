@@ -79,13 +79,34 @@ Option (abstract)
 └── README.md
 ```
 
-## Getting Started
+## Install the package
 
-### Install the package
+The library is published on [PyPI](https://pypi.org/project/pyoptionpricing/) and needs Python 3.9+.
 
+```bash
+pip install pyoptionpricing
+```
+
+```python
+from pyoptionpricing import OptionFactory, PricingEngine
+
+option = OptionFactory.create("black_scholes", "european", 100, 100, 1.0, 0.05, 0.2, "call")
+print(PricingEngine(option).price())    # about 10.4506
+```
+
+The package depends only on NumPy and SciPy. To run the FastAPI backend from the installed package as well, add the `api` extra: `pip install "pyoptionpricing[api]"`.
+
+To install the latest code from GitHub instead of PyPI:
+
+```bash
 pip install git+https://github.com/MaadhiniNarayanaKumar/pyoptionpricing.git
+```
 
-To run the API as well: `pip install "pyoptionpricing[api] @ git+https://github.com/MaadhiniNarayanaKumar/pyoptionpricing.git"`
+See [Usage Example](#usage-example) for more, including how to swap models.
+
+## Run the project locally
+
+This section is for working on the repository itself: the backend, the frontend and the tests.
 
 ### Prerequisites
 
@@ -96,8 +117,8 @@ To run the API as well: `pip install "pyoptionpricing[api] @ git+https://github.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/<your-repo>.git
-cd <your-repo>
+git clone https://github.com/MaadhiniNarayanaKumar/pyoptionpricing.git
+cd pyoptionpricing
 ```
 
 ### 2. Set up the Python environment
@@ -108,7 +129,7 @@ source .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"        # or: pip install -r requirements-dev.txt
 ```
 
-The library itself depends only on NumPy and SciPy, so `pip install .` is enough to use it from Python. The `api` extra (`pip install ".[api]"`) adds FastAPI, Pydantic and Uvicorn for the backend, and `dev` adds the test tools.
+From a clone, `pip install .` installs the library (NumPy and SciPy only). The `api` extra (`pip install ".[api]"`) adds FastAPI, Pydantic and Uvicorn for the backend, and `dev` adds the test tools.
 
 ### 3. Run the backend
 
@@ -199,9 +220,9 @@ Target coverage: 80%+
 
 ## Documentation
 
-- [UML class diagram](docs/uml.md)
-- [Architecture and request flow](docs/architecture.md)
-- [Final report](docs/report.md): OOP principles mapped to classes and files, results, challenges
+- [UML class diagram](https://github.com/MaadhiniNarayanaKumar/pyoptionpricing/blob/main/docs/uml.md)
+- [Architecture and request flow](https://github.com/MaadhiniNarayanaKumar/pyoptionpricing/blob/main/docs/architecture.md)
+- [Final report](https://github.com/MaadhiniNarayanaKumar/pyoptionpricing/blob/main/docs/report.md): OOP principles mapped to classes and files, results, challenges
 
 ## Deployment
 
@@ -254,4 +275,4 @@ Create a second project with **Root Directory** set to `frontend`, and set `NEXT
 
 ## License
 
-Released under the MIT License. See [LICENSE](LICENSE). Developed as coursework at Rutgers University.
+Released under the MIT License. See [LICENSE](https://github.com/MaadhiniNarayanaKumar/pyoptionpricing/blob/main/LICENSE). Developed as coursework at Rutgers University.

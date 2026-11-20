@@ -81,6 +81,12 @@ Option (abstract)
 
 ## Getting Started
 
+### Install the package
+
+pip install git+https://github.com/MaadhiniNarayanaKumar/pyoptionpricing.git
+
+To run the API as well: `pip install "pyoptionpricing[api] @ git+https://github.com/MaadhiniNarayanaKumar/pyoptionpricing.git"`
+
 ### Prerequisites
 
 - Python 3.9+

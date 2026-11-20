@@ -62,7 +62,7 @@ Option (abstract)
 | Backend | FastAPI, Pydantic, Swagger/OpenAPI |
 | Frontend | Next.js, React, TypeScript, Recharts |
 | Testing | pytest, pytest-cov |
-| Deployment | Vercel (frontend), Google Cloud Run (backend, optional) |
+| Deployment | Vercel (backend and frontend, as two projects) |
 
 ## Project Structure
 
@@ -195,9 +195,34 @@ Target coverage: 80%+
 
 ## Deployment
 
-- **Frontend:** Vercel
-- **Backend:** Google Cloud Run (optional)
-- **Demo:** <add link here>
+Both parts run on Vercel as two separate projects from this one repository.
+
+### Backend (FastAPI on Vercel)
+
+Create a Vercel project from the repository with **Root Directory** left at the repository root and **Framework Preset** set to FastAPI (or Other). No build command is needed.
+
+- `pyproject.toml` lists the runtime dependencies and sets `[tool.vercel] entrypoint = "backend.main:app"`.
+- `vercel.json` sets the function timeout and leaves the frontend, tests and docs out of the bundle.
+- Set the environment variable `FRONTEND_ORIGINS` to the frontend's URL (comma-separated for more than one), for example `https://your-frontend.vercel.app`. Redeploy after changing it.
+
+With the Vercel CLI instead of Git:
+
+```bash
+npm i -g vercel
+vercel          # preview deployment
+vercel --prod   # production deployment
+```
+
+Check it with `https://<your-backend>.vercel.app/health` and `https://<your-backend>.vercel.app/docs`.
+
+### Frontend (Next.js on Vercel)
+
+Create a second project with **Root Directory** set to `frontend`, and set `NEXT_PUBLIC_API_URL` to the backend URL.
+
+### Links
+
+- **Backend:** <add backend link here>
+- **Frontend / demo:** <add link here>
 
 ## Deliverables
 

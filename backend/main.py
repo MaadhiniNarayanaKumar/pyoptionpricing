@@ -35,9 +35,13 @@ app = FastAPI(
 _origins = os.environ.get(
     "FRONTEND_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000"
 )
+# Vercel gives every deployment its own URL, so a regex can allow them all.
+# Example: FRONTEND_ORIGIN_REGEX=https://pyoptionpricing-.*-maadhinis-projects\.vercel\.app
+_origin_regex = os.environ.get("FRONTEND_ORIGIN_REGEX") or None
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[origin.strip() for origin in _origins.split(",") if origin.strip()],
+    allow_origin_regex=_origin_regex,
     allow_methods=["*"],
     allow_headers=["*"],
 )

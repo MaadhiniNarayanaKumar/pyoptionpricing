@@ -204,6 +204,7 @@ Create a Vercel project from the repository with **Root Directory** left at the 
 - `pyproject.toml` lists the runtime dependencies and sets `[tool.vercel] entrypoint = "backend.main:app"`.
 - `vercel.json` sets the function timeout and leaves the frontend, tests and docs out of the bundle.
 - Set the environment variable `FRONTEND_ORIGINS` to the frontend's URL (comma-separated for more than one), for example `https://your-frontend.vercel.app`. Redeploy after changing it.
+- Vercel gives each deployment its own URL, so you can also set `FRONTEND_ORIGIN_REGEX` to a pattern that matches all of them, for example `https://pyoptionpricing-.*-maadhinis-projects\.vercel\.app`.
 
 With the Vercel CLI instead of Git:
 

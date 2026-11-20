@@ -169,3 +169,25 @@ class TestMeta:
                      "Access-Control-Request-Method": "POST"},
         )
         assert r.headers["access-control-allow-origin"] == "http://localhost:3000"
+
+    def test_cors_origin_regex_allows_matching_deployments_only(self, monkeypatch):
+        import importlib
+
+        import backend.main as main_module
+
+        pattern = r"https://pyoptionpricing-.*-maadhinis-projects\.vercel\.app"
+        monkeypatch.setenv("FRONTEND_ORIGIN_REGEX", pattern)
+        try:
+            app = importlib.reload(main_module).app
+            regex_client = TestClient(app)
+            ask = {"Access-Control-Request-Method": "POST"}
+            ok = "https://pyoptionpricing-f7tqzrw2j-maadhinis-projects.vercel.app"
+            allowed = regex_client.options("/price", headers={"Origin": ok, **ask})
+            blocked = regex_client.options(
+                "/price", headers={"Origin": "https://evil.example.com", **ask}
+            )
+            assert allowed.headers["access-control-allow-origin"] == ok
+            assert "access-control-allow-origin" not in blocked.headers
+        finally:
+            monkeypatch.delenv("FRONTEND_ORIGIN_REGEX")
+            importlib.reload(main_module)

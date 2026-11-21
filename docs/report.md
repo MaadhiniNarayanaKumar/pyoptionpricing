@@ -10,6 +10,20 @@
 
 The library is served by a FastAPI backend with eight endpoints and used through a Next.js dashboard. Both are deployed on Vercel: the dashboard at https://pyoptionspricing.maadhini.com and the API (with Swagger docs) at https://pyoptionpricing.vercel.app/docs. The dashboard shows prices and Greeks, a model comparison, and charts of payoff, convergence, simulated paths and the volatility smile.
 
+The library is also published as an installable package on PyPI (version 0.1.1, MIT license, Python 3.9 or newer). It depends only on NumPy and SciPy. The FastAPI packages are an optional extra, so the library stays light when it is used without the web layer:
+
+```bash
+pip install pyoptionpricing            # the library only
+pip install "pyoptionpricing[api]"     # plus FastAPI, Pydantic and Uvicorn
+```
+
+| Link | Address |
+| --- | --- |
+| PyPI package | https://pypi.org/project/pyoptionpricing/ |
+| Source code (GitHub) | https://github.com/MaadhiniNarayanaKumar/pyoptionpricing |
+| Live demo (Next.js dashboard) | https://pyoptionspricing.maadhini.com (also at https://pyoptionpricingui.vercel.app) |
+| Live API and Swagger docs | https://pyoptionpricing.vercel.app/docs |
+
 ## 2. Mapping OOP principles to the code
 
 | Principle | Where | How |
@@ -151,7 +165,7 @@ pytest --cov=pyoptionpricing --cov=backend --cov-report=term-missing
 
 ```
 
-Coverage is about 99% (target: 80%). The required correctness checks are all present:
+Coverage is about 99% (target: 80%). The package was also checked from the outside: `examples/smoke_test.py` runs 19 checks (Black-Scholes, Greeks, binomial and American pricing, Monte Carlo, Asian and barrier options, implied volatility and the smile, the engine and factory aliases, and input validation) against a clean virtual environment where the library was installed with `pip install pyoptionpricing`, and all 19 pass. The required correctness checks are all present:
 
 | Check | Test |
 | --- | --- |
@@ -182,6 +196,12 @@ Coverage is about 99% (target: 80%). The required correctness checks are all pre
 - **Units between the UI and the API.** The form takes rate and volatility in percent (4.330 and 20), and the API takes decimals (0.0433 and 0.20). Vega and rho look large because they are per 1.00 change in \(\sigma\) or \(r\), not per percentage point. The form converts percentages in one function (`toRequest`), and the cards label each Greek's unit, so screen values can be checked against the library directly.
 
 - **Documentation drifting from the code.** The README example once built `PricingEngine()` and passed the option to `price()`. The real constructor takes the option, so `PricingEngine(option).price()` is correct and the old example raised `TypeError`. The README now matches the code, and `demo.py` runs the documented usage.
+
+- **Deploying the backend on Vercel.** Vercel reads `pyproject.toml` before `requirements.txt`, and it installs without optional extras. The first deployment therefore had no FastAPI. Adding FastAPI to the core dependencies would have worked but made the library heavy. Instead FastAPI and Pydantic are an `api` extra for pip users and also an `api` dependency group that Vercel installs by default (`[tool.uv] default-groups`).
+
+- **CORS between the two Vercel projects.** The browser blocked calls from the dashboard with "Disallowed CORS origin" because the dashboard's address was not in the backend's `FRONTEND_ORIGINS` setting. The setting now accepts several comma-separated origins, ignores trailing slashes, and has an optional regex for preview deployments. Adding the custom domain later meant adding that address to the same setting and redeploying the backend. Tests cover the allowed and blocked cases.
+
+- **Publishing to PyPI.** The first upload failed with a 403 because the token was for the wrong site and scope (TestPyPI and PyPI tokens are separate). The package metadata also needed care: an MIT `LICENSE` file, `license = "MIT"` with a newer setuptools, a README for the package page, and project links. I uploaded to TestPyPI first, then PyPI, and ran the smoke test from a clean install. PyPI does not allow replacing a release, so a README or link fix needs a new version (0.1.1).
 
 - **Keeping routes thin.** The API reads the constructor signature of the class the factory resolves. That way it can forward only the inputs each model accepts without hard-coding a list per model.
 
@@ -215,7 +235,8 @@ I used AI tools while building this project. This section states how, so the wor
 | Nov 10 | Project setup. A first version generated with Cursor (option hierarchy, validation, Black-Scholes) was reverted, and I restarted from a smaller base. |
 | Nov 11 | Binomial European and American options, with Copilot assistance. |
 | Nov 13 | Monte Carlo pricing, factory and engine, with tests. |
-| Nov 19 | Asian and barrier options, implied volatility, analysis helpers, FastAPI backend, Next.js frontend, documentation. |
+| Nov 19 | Asian and barrier options, implied volatility, analysis helpers, FastAPI backend, Next.js frontend, documentation. Backend and frontend deployed on Vercel. |
+| Nov 20 | MIT license and package metadata, CORS and dependency fixes, package published to TestPyPI and PyPI (0.1.0, then 0.1.1), custom domain `pyoptionspricing.maadhini.com`, logo and favicon, final links. |
 
 ### AI Assistance and Individual Contributions
 
@@ -232,6 +253,8 @@ Their assistance included:
 - Supporting Git workflows, including commit-related issues and `.gitignore` configuration.
 
 - Providing suggestions for code comments and documentation.
+
+- Walking through the Vercel deployment, CORS settings and PyPI release steps, and helping diagnose the errors that came up.
 
 - Reviewing and refining parts of this report.
 
@@ -253,6 +276,8 @@ The overall design, development, integration, testing, and verification of the p
 
 - Verified frontend and backend integration to ensure API requests and responses were handled correctly.
 
+- Installed the published package from PyPI into a clean virtual environment and ran `examples/smoke_test.py` (19 checks). Also called the live API from the live dashboard to confirm CORS works.
+
 - Tested different option parameters, including strike prices, volatility, maturity, and interest rates, to check the consistency of pricing outputs.
 
 - Checked edge cases and invalid inputs to verify that the application handled errors appropriately.
@@ -269,7 +294,8 @@ The overall design, development, integration, testing, and verification of the p
 | Backend | `backend/main.py`, `backend/schemas.py` | FastAPI app and request schemas |
 | Frontend | `frontend/src/` (components, `lib/`, app pages) | Next.js dashboard |
 | Tests | `tests/` (11 files) | pytest suite |
-| Demo and examples | `demo.py`, `examples/` | Sample output and example API requests |
+| Packaging and deployment | `pyproject.toml`, `LICENSE`, `requirements.txt`, `requirements-dev.txt`, `vercel.json` | PyPI package metadata and build, MIT license, dependency lists, Vercel backend settings |
+| Demo and examples | `demo.py`, `examples/` | Sample output, example API requests, installed-package smoke test |
 | Documentation | `README.md`, `docs/` | Setup, report, UML, architecture |
 
 ### Code and ideas not written by me
@@ -280,6 +306,8 @@ The overall design, development, integration, testing, and verification of the p
 | SciPy | `scipy.stats.norm` (normal CDF and PDF), `scipy.optimize.brentq` (root finding) |
 | FastAPI, Pydantic, Uvicorn | Backend API, validation, server |
 | pytest, pytest-cov, httpx | Testing and coverage |
+| setuptools, build, twine | Building the package and uploading it to TestPyPI and PyPI |
+| Vercel, PyPI, GitHub | Hosting the backend and frontend, hosting the package, hosting the source |
 | Next.js, React, TypeScript, Recharts, Tailwind CSS, ESLint | Frontend framework, charts, styling, linting |
 | Geist and Geist Mono fonts (Google Fonts, loaded through `next/font`) | Frontend typography |
 | Next.js starter template (`create-next-app`) | Initial frontend scaffolding. Unused starter files (default images, template README) were removed. |
